@@ -1,0 +1,68 @@
+{% set version = "18.1.2" %}
+
+package:
+  name: berkeleydb
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/b/berkeleydb/berkeleydb-{{ version }}.tar.gz
+  sha256: b617a8f8562a36e5a395beb93e07a0905dd5e68e7ba2e87916a740db9126470e
+
+build:
+  number: 0
+  script: |
+    export YES_I_HAVE_THE_RIGHT_TO_USE_THIS_BERKELEY_DB_VERSION=1  # [not win]
+    export BERKELEYDB_DIR=$PREFIX                                  # [not win]
+    set YES_I_HAVE_THE_RIGHT_TO_USE_THIS_BERKELEY_DB_VERSION=1     # [win]
+    set BERKELEYDB_DIR=%PREFIX%                                    # [win]
+    {{ PYTHON }} -m pip install . --no-deps --ignore-installed
+
+requirements:
+  build:
+    - python                                 # [build_platform != target_platform]
+    - cross-python_{{ target_platform }}     # [build_platform != target_platform]
+    - {{ compiler('c') }}
+  host:
+    - python
+    - pip
+    - libdb
+  run:
+    - python
+    - libdb
+
+test:
+  imports:
+    - berkeleydb
+
+about:
+  home: https://www.jcea.es/programacion/pybsddb.htm
+  license: BSD-3-Clause
+  license_family: BSD
+  license_file: LICENSE.txt
+  summary: Python bindings for Oracle Berkeley DB
+
+  description: |
+    This module provides a nearly complete wrapping of the Oracle/Sleepycat C API
+    for the Database Environment, Database, Cursor, Log Cursor, Sequence and
+    Transaction objects, and each of these is exposed as a Python type in the
+    berkeleydb.db module. The database objects can use various access methods:
+    btree, hash, recno, queue and heap.
+    Complete support of Oracle Berkeley DB distributed transactions.
+    Complete support for Oracle Berkeley DB Replication Manager.
+    Complete support for Oracle Berkeley DB Base Replication.
+
+    Please see the documents in the docs directory of the source distribution or at
+    the website for more details on the types and methods provided. The goal is to
+    mirror most of the real Oracle Berkeley DB API so fall back to the Oracle
+    Berkeley DB documentation as appropriate.
+
+    If you need to support ancient versions of Python and/or Oracle Berkeley DB ,
+    you can use legacy `bsddb3 <https://pypi.org/project/bsddb3/>`__ library.
+
+  doc_url: https://www.jcea.es/programacion/pybsddb_doc/
+  dev_url: https://hg.jcea.es/pybsddb/
+
+extra:
+  recipe-maintainers:
+    - shadowwalkersb
+    - h-vetinari
