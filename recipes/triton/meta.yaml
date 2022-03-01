@@ -43,7 +43,8 @@ test:
   requires:
     - pip
     - pytest
-    - gputil
+    - cudatoolkit
+    - nvcc
     - scipy
   source_files:
     - python/test
